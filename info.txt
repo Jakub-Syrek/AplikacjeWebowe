@@ -1,0 +1,9 @@
+server
+npm run server
+
+
+client:
+
+serve -s build // z zaistalowanym serve
+npm run build
+npm start
