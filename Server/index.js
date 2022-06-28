@@ -7,14 +7,14 @@ const MongoClient = require('mongodb').MongoClient
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-conn = MongoClient.connect('mongodb://localhost:27017/', {
-        dbName: 'star-wars-quotes',
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(client => {
-        console.log('Connected to Database')
-        const db = client.db('star-wars-quotes')
-    })
+// conn = MongoClient.connect('mongodb://localhost:27017/', {
+//         dbName: 'star-wars-quotes',
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true
+//     }).then(client => {
+//         console.log('Connected to Database')
+//         const db = client.db('star-wars-quotes')
+//     })
 
 
 
@@ -38,7 +38,7 @@ const url = 'mongodb://localhost:27017';
 const dbName = 'star-wars-quotes';
 
 app.post('/quotes', (req, res) => {
-
+    console.log(req.body)
     MongoClient.connect('mongodb://localhost:27017/', {
         dbName: 'star-wars-quotes',
         useNewUrlParser: true,
@@ -52,8 +52,6 @@ app.post('/quotes', (req, res) => {
         console.log('Connected to Database inserting')
         console.log('Currently records: ' + col)
     })
-
-    console.log(req.body)
 })
 
 
