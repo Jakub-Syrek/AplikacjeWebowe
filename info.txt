@@ -7,3 +7,11 @@ client:
 serve -s build // z zaistalowanym serve
 npm run build
 npm start
+
+mongodb:
+sudo mkdir -p /data/db
+sudo apt install mongodb-server-core
+mongod
+
+sudo chown -R `id -un` /data/db
+mongo //start
