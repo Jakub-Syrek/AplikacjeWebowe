@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Pages/Layout";
 import Home from "./Pages/Home";
 import Create from "./Pages/Create";
-//import Read from "./Pages/Read";
+import Read from "./Pages/Read";
 //import Update from "./Pages/Update";
 import Delete from "./Pages/Delete";
 
@@ -21,7 +21,7 @@ export default function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="create" element={<Create />} />
-                     {/*<Route path="read" element={<Read />} />*/}
+                    <Route path="read" element={<Read />} />
                     {/*<Route path="update" element={<Update />} />*/}
                     <Route path="delete" element={<Delete />} />
                     <Route path="*" element={<NoPage />} />

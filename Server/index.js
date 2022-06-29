@@ -28,29 +28,49 @@ app.get('/quotes',cors(), (req, res) => {
 
     var MongoClient = require('mongodb').MongoClient;
 
-    MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db(dbName);
-        var myobj = req.body;
-
-        var coll = dbo.collection("Quotes")
-        insertOne(myobj, function(err, res) {
-            if (err) throw err;
-            console.log("1 document inserted to Mongo Collection");
-
-            db.close();
-        });
-    });
+    var coll = null
 
     MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
-        var dbo = db.db(dbName);
+        const dbo = db.db(dbName);
 
         var collSize = await dbo.collection("Quotes").countDocuments()
         console.log("Collection size now:" + collSize);
     });
+    MongoClient.connect(url, async function (err, db) {
+        if (err) throw err;
+        const dbo = db.db(dbName);
 
-    res.send( req.body + ' inserted')
+        coll = await dbo.collection("Quotes").find()
+
+        var results = []
+        var first = await coll.forEach(function (myDoc){
+            console.log("name:" + myDoc.name);
+            results.push({"name": myDoc.name, "quote": myDoc.quote})
+        })
+        res.send(results)
+        //var first = await coll.findOne({name : "sss"})
+
+            //console.log(first.quote)
+        //console.log(first._id)
+
+
+    });
+    // MongoClient.connect(url, async function (err, db) {
+    //     if (err) throw err;
+    //     var dbo = db.db(dbName);
+    //     var myobj = req.body;
+    //
+    //     coll = await dbo.collection("Quote").find().limit(5)
+    //
+    //     console.log("collection retrieved");
+    //     console.log(await coll.toArray())
+    //
+    //     db.close();
+    //
+    // });
+
+    //res.send( coll )
 })
 
 app.post('/quotes',cors(), (req, res) => {
