@@ -2,60 +2,58 @@ const express = require('express');
 const bodyParser= require('body-parser')
 const path = require('path');
 const app = express();
+const cors = require('cors')
 
 const MongoClient = require('mongodb').MongoClient
-
-app.use(bodyParser.urlencoded({ extended: true }))
-
-// conn = MongoClient.connect('mongodb://localhost:27017/', {
-//         dbName: 'star-wars-quotes',
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true
-//     }).then(client => {
-//         console.log('Connected to Database')
-//         const db = client.db('star-wars-quotes')
-//     })
-
-
-
-// a test route to make sure we can reach the backend
-//this would normally go in a routes file
-app.get('/test', (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
-    res.send('Welcome to the backend!')
-})
-app.get('/', (req, res) => {
-    //res.set('Access-Control-Allow-Origin', '*');
-    res.sendFile(__dirname + '/index.html')
-    // Note: __dirname is the current directory you're in. Try logging it and see what you get!
-    // Mine was '/Users/zellwk/Projects/demo-repos/crud-express-mongo' for this app.
-})
-
-const test = require('assert');
-// Connection url
-const url = 'mongodb://localhost:27017';
-// Database Name
+const url = 'mongodb://localhost:27017/';
 const dbName = 'star-wars-quotes';
 
-app.post('/quotes', (req, res) => {
-    console.log(req.body)
-    MongoClient.connect('mongodb://localhost:27017/', {
-        dbName: 'star-wars-quotes',
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).
-        then(async client => {
-        await client.db().collection("Quotes").insertOne(
-            req.body
-        )
-        let col = await client.db().collection("Quotes").countDocuments()
-        console.log('Connected to Database inserting')
-        console.log('Currently records: ' + col)
-    })
+
+app.use(bodyParser.json())
+
+app.use(cors())
+
+app.get('/test', (req, res) => {
+    //res.set('Access-Control-Allow-Origin', '*');
+    res.send('Welcome to the backend!')
 })
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html')
+})
 
-//Set the port that you want the server to run onconst 
+app.post('/quotes',cors(), (req, res) => {
+
+      console.log(req.body)
+
+    var MongoClient = require('mongodb').MongoClient;
+
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db(dbName);
+        var myobj = req.body;
+
+        dbo.collection("Quotes").insertOne(myobj, function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted to Mongo Collection");
+
+            db.close();
+        });
+    });
+
+    MongoClient.connect(url, async function (err, db) {
+        if (err) throw err;
+        var dbo = db.db(dbName);
+
+        var collSize = await dbo.collection("Quotes").countDocuments()
+        console.log("Collection size now:" + collSize);
+    });
+
+    res.send( req.body + ' inserted')
+})
+
 const port = process.env.PORT || 8080;
+
 app.listen(port);
+
 console.log('App is listening on port ' + port);
